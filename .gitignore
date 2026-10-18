@@ -1,0 +1,29 @@
+# Credentials and local settings
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+
+# Python and JavaScript dependency/cache folders
+.venv/
+venv/
+__pycache__/
+*.py[cod]
+.pytest_cache/
+node_modules/
+
+# Build and runtime outputs
+build/
+dist/
+runs/
+logs/
+*.log
+*.tmp
+
+# Editors and OS files
+.idea/
+.vscode/
+.DS_Store
+Thumbs.db
+desktop.ini
