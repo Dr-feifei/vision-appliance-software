@@ -1,0 +1,23 @@
+F                                                                        [100%]
+================================== FAILURES ===================================
+______ test_corrupted_camera_credentials_can_be_replaced_without_old_key ______
+
+admin = <starlette.testclient.TestClient object at 0x000002C1DC22F380>
+app = <fastapi.applications.FastAPI object at 0x000002C1DC22FA10>
+
+    def test_corrupted_camera_credentials_can_be_replaced_without_old_key(admin,app):
+        from app.shared.models import Source
+        source=admin.post(API+'/sources',json={'name':'camera','kind':'camera','address':'rtsp://127.0.0.1:1/live'}).json()
+        with app.state.sessions() as db:
+            db.get(Source,source['id']).credentials='invalid-ciphertext'
+            db.commit()
+        response=admin.patch(API+'/sources/'+source['id'],json={'username':'new-user','password':' new-password ','row_version':source['row_version']})
+>       assert response.status_code==200,response.text
+E       AssertionError: {"error":{"code":"internal_error","message":"服务器内部错误，请通过请求编号联系维护人员。","details":null,"retryable":false,"request_id":"5ddf7ca4-1f81-444b-a85e-f598611486c4"}}
+E       assert 500 == 200
+E        +  where 500 = <Response [500 Internal Server Error]>.status_code
+
+tests\backend\test_security_worker.py:323: AssertionError
+=========================== short test summary info ===========================
+FAILED tests/backend/test_security_worker.py::test_corrupted_camera_credentials_can_be_replaced_without_old_key
+1 failed, 18 deselected in 1.56s

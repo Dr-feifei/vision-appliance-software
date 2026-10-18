@@ -1,0 +1,77 @@
+from collections import deque
+import shutil
+import time
+import psutil
+from fastapi import APIRouter, Depends, Request, Query
+from sqlalchemy import select, func
+from ..shared.db import get_db
+from ..shared.models import Source, Worker, Log, now
+from ..schemas import RuntimeDTO, DashboardDTO, EventPage, LogPage
+from .auth import current_user
+from .sources import source_dto
+
+router = APIRouter(tags=['runtime'])
+
+def executable(value):
+    return shutil.which(value) is not None
+
+def worker_rows(db):
+    return list(db.scalars(select(Worker).where(Worker.heartbeat_at>time.time()-15)))
+
+def dependency_services(app,db):
+    observed = now()
+    worker = bool(worker_rows(db))
+    ffmpeg = executable(app.state.config.ffmpeg) and executable(app.state.config.ffprobe)
+    return [
+        {'key':'api','name':'API','status':'ready','message':'API 与持久层可用。','observed_at':observed},
+        {'key':'worker','name':'Worker','status':'ready' if worker else 'unavailable','message':'独立 Worker 心跳正常。' if worker else '未收到独立 Worker 心跳，请启动 Worker。','observed_at':observed},
+        {'key':'ffmpeg','name':'FFmpeg / FFprobe','status':'ready' if ffmpeg else 'unavailable','message':'本地媒体工具可用。' if ffmpeg else '请安装 FFmpeg 与 FFprobe，并设置 VISION_FFMPEG / VISION_FFPROBE。','observed_at':observed},
+        {'key':'media_gateway','name':'MediaMTX','status':'unavailable','message':'摄像头媒体网关尚未接入。','observed_at':observed},
+        {'key':'models','name':'本地模型运行时','status':'unavailable','message':'未注册模型执行器，本轮不执行推理。','observed_at':observed},
+        {'key':'gpu','name':'GPU 采集器','status':'unavailable','message':'未接入 GPU 采集器，使用率未知。','observed_at':observed},
+    ]
+
+def runtime_snapshot(app,db,record=True):
+    sample = {'observed_at':now(),'cpu_percent':psutil.cpu_percent(interval=0.1),'memory_percent':psutil.virtual_memory().percent,'gpu_percent':None}
+    if record:
+        app.state.runtime_history.append(sample)
+    usage = shutil.disk_usage(app.state.config.var_root)
+    total = db.scalar(select(func.count()).select_from(Source).where(Source.archived==False))
+    online = db.scalar(select(func.count()).select_from(Source).where(Source.archived==False,Source.kind=='camera',Source.status=='online'))
+    return {**sample,'disk':{'used_bytes':usage.used,'total_bytes':usage.total,'free_bytes':usage.free},'sources':{'total':total,'online':online},'runs':{'running':0,'completed':0,'failed':0},'services':dependency_services(app,db),'models':[],'workers':[{'id':w.id,'status':'online','observed_at':__import__('datetime').datetime.fromtimestamp(w.heartbeat_at,__import__('datetime').timezone.utc).isoformat().replace('+00:00','Z')} for w in worker_rows(db)],'history':list(app.state.runtime_history)}
+
+@router.get('/runtime/overview',response_model=RuntimeDTO)
+def overview(request:Request,user=Depends(current_user),db=Depends(get_db)):
+    return runtime_snapshot(request.app,db)
+
+@router.get('/dashboard',response_model=DashboardDTO)
+def dashboard(user=Depends(current_user),db=Depends(get_db)):
+    sources = list(db.scalars(select(Source).where(Source.archived==False).order_by(Source.created_at.desc()).limit(100)))
+    total = db.scalar(select(func.count()).select_from(Source).where(Source.archived==False))
+    online = db.scalar(select(func.count()).select_from(Source).where(Source.archived==False,Source.kind=='camera',Source.status=='online'))
+    return {'counts':{'sources_total':total,'sources_online':online,'active_runs':0,'today_events':0},'sources':[source_dto(s) for s in sources],'recent_events':[],'task_summary':{'running':0,'completed':0,'waiting':0}}
+
+@router.get('/events',response_model=EventPage)
+def events(user=Depends(current_user)):
+    return {'items':[],'next_cursor':None}
+
+@router.get('/runs')
+def runs(user=Depends(current_user)):
+    return {'items':[],'next_cursor':None}
+
+@router.get('/logs',response_model=LogPage)
+def logs(level:str|None=None,q:str='',limit:int=Query(100,ge=1,le=500),user=Depends(current_user),db=Depends(get_db)):
+    statement = select(Log)
+    if level:
+        statement = statement.where(Log.level==level.upper())
+    if q:
+        statement = statement.where(Log.message.contains(q,autoescape=True))
+    return {'items':list(db.scalars(statement.order_by(Log.occurred_at.desc()).limit(limit))),'next_cursor':None}
+
+@router.get('/health/live')
+def live():
+    return {'status':'ok'}
+
+@router.get('/health/ready')
+def ready(request:Request,db=Depends(get_db)):
+    return {'status':'ready','services':dependency_services(request.app,db)}

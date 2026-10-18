@@ -1,0 +1,47 @@
+{
+  "description": "Illustrative contract examples only; identifiers are placeholders and do not represent live inference results.",
+  "initial_dashboard": {
+    "counts": {"sources_total": 0, "sources_online": 0, "active_runs": 0, "today_events": 0},
+    "sources": [],
+    "recent_events": [],
+    "task_summary": {"running": 0, "completed": 0, "waiting": 0}
+  },
+  "queued_upload": {
+    "id": "00000000-0000-4000-8000-000000000001",
+    "state": "probing",
+    "received_bytes": 1024,
+    "size_bytes": 1024,
+    "source_id": "00000000-0000-4000-8000-000000000002",
+    "error_code": null,
+    "error_message": null
+  },
+  "partial_camera_test": {
+    "id": "00000000-0000-4000-8000-000000000003",
+    "state": "completed",
+    "source_id": "00000000-0000-4000-8000-000000000002",
+    "error_code": null,
+    "message": "RTSP 视频会话描述可达；尚未验证实际解码，浏览器直播仍需接入媒体网关。"
+  },
+  "dependency_error": {
+    "error": {
+      "code": "dependency_unavailable",
+      "message": "摄像头媒体网关未接入，请部署并接入 MediaMTX。",
+      "details": null,
+      "retryable": true,
+      "request_id": "00000000-0000-4000-8000-000000000004"
+    }
+  },
+  "event_extension": {
+    "id": "00000000-0000-4000-8000-000000000005",
+    "event_type": "future_executor_event",
+    "source_id": null,
+    "source_name": null,
+    "run_id": null,
+    "revision_id": null,
+    "occurred_at": null,
+    "start_media_ms": null,
+    "reason": "Example schema only; foundation creates no inference events.",
+    "evidence_status": "unavailable",
+    "review_status": "unreviewed"
+  }
+}

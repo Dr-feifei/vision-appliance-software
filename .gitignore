@@ -33,3 +33,6 @@ var/
 .artifacts/
 .env.local
 
+output/playwright/
+test-results/
+.playwright-cli/

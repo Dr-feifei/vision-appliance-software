@@ -1,0 +1,238 @@
+EEEEEEEEE                                                                [100%]
+=================================== ERRORS ====================================
+___________ ERROR at setup of test_business_and_media_require_auth ____________
+
+tmp_path = WindowsPath('C:/Users/25193/AppData/Local/Temp/pytest-of-25193/pytest-0/test_business_and_media_requir0')
+
+    @pytest.fixture
+    def app(tmp_path):
+        try:
+>           from app.main import create_app
+E           ModuleNotFoundError: No module named 'app'
+
+tests\backend\conftest.py:11: ModuleNotFoundError
+
+During handling of the above exception, another exception occurred:
+
+tmp_path = WindowsPath('C:/Users/25193/AppData/Local/Temp/pytest-of-25193/pytest-0/test_business_and_media_requir0')
+
+    @pytest.fixture
+    def app(tmp_path):
+        try:
+            from app.main import create_app
+        except ImportError:
+>           pytest.fail('Foundation API application has not been implemented')
+E           Failed: Foundation API application has not been implemented
+
+tests\backend\conftest.py:13: Failed
+_______ ERROR at setup of test_setup_once_secure_cookie_csrf_and_login ________
+
+tmp_path = WindowsPath('C:/Users/25193/AppData/Local/Temp/pytest-of-25193/pytest-0/test_setup_once_secure_cookie_0')
+
+    @pytest.fixture
+    def app(tmp_path):
+        try:
+>           from app.main import create_app
+E           ModuleNotFoundError: No module named 'app'
+
+tests\backend\conftest.py:11: ModuleNotFoundError
+
+During handling of the above exception, another exception occurred:
+
+tmp_path = WindowsPath('C:/Users/25193/AppData/Local/Temp/pytest-of-25193/pytest-0/test_setup_once_secure_cookie_0')
+
+    @pytest.fixture
+    def app(tmp_path):
+        try:
+            from app.main import create_app
+        except ImportError:
+>           pytest.fail('Foundation API application has not been implemented')
+E           Failed: Foundation API application has not been implemented
+
+tests\backend\conftest.py:13: Failed
+___ ERROR at setup of test_settings_persist_validate_and_reject_lost_update ___
+
+tmp_path = WindowsPath('C:/Users/25193/AppData/Local/Temp/pytest-of-25193/pytest-0/test_settings_persist_validate0')
+
+    @pytest.fixture
+    def app(tmp_path):
+        try:
+>           from app.main import create_app
+E           ModuleNotFoundError: No module named 'app'
+
+tests\backend\conftest.py:11: ModuleNotFoundError
+
+During handling of the above exception, another exception occurred:
+
+tmp_path = WindowsPath('C:/Users/25193/AppData/Local/Temp/pytest-of-25193/pytest-0/test_settings_persist_validate0')
+
+    @pytest.fixture
+    def app(tmp_path):
+        try:
+            from app.main import create_app
+        except ImportError:
+>           pytest.fail('Foundation API application has not been implemented')
+E           Failed: Foundation API application has not been implemented
+
+tests\backend\conftest.py:13: Failed
+__ ERROR at setup of test_camera_credentials_redacted_encrypted_and_archive ___
+
+tmp_path = WindowsPath('C:/Users/25193/AppData/Local/Temp/pytest-of-25193/pytest-0/test_camera_credentials_redact0')
+
+    @pytest.fixture
+    def app(tmp_path):
+        try:
+>           from app.main import create_app
+E           ModuleNotFoundError: No module named 'app'
+
+tests\backend\conftest.py:11: ModuleNotFoundError
+
+During handling of the above exception, another exception occurred:
+
+tmp_path = WindowsPath('C:/Users/25193/AppData/Local/Temp/pytest-of-25193/pytest-0/test_camera_credentials_redact0')
+
+    @pytest.fixture
+    def app(tmp_path):
+        try:
+            from app.main import create_app
+        except ImportError:
+>           pytest.fail('Foundation API application has not been implemented')
+E           Failed: Foundation API application has not been implemented
+
+tests\backend\conftest.py:13: Failed
+_______ ERROR at setup of test_camera_network_allowlist_and_url_schemes _______
+
+tmp_path = WindowsPath('C:/Users/25193/AppData/Local/Temp/pytest-of-25193/pytest-0/test_camera_network_allowlist_0')
+
+    @pytest.fixture
+    def app(tmp_path):
+        try:
+>           from app.main import create_app
+E           ModuleNotFoundError: No module named 'app'
+
+tests\backend\conftest.py:11: ModuleNotFoundError
+
+During handling of the above exception, another exception occurred:
+
+tmp_path = WindowsPath('C:/Users/25193/AppData/Local/Temp/pytest-of-25193/pytest-0/test_camera_network_allowlist_0')
+
+    @pytest.fixture
+    def app(tmp_path):
+        try:
+            from app.main import create_app
+        except ImportError:
+>           pytest.fail('Foundation API application has not been implemented')
+E           Failed: Foundation API application has not been implemented
+
+tests\backend\conftest.py:13: Failed
+_ ERROR at setup of test_upload_chunks_are_idempotent_ordered_size_bounded_and_cancelable _
+
+tmp_path = WindowsPath('C:/Users/25193/AppData/Local/Temp/pytest-of-25193/pytest-0/test_upload_chunks_are_idempot0')
+
+    @pytest.fixture
+    def app(tmp_path):
+        try:
+>           from app.main import create_app
+E           ModuleNotFoundError: No module named 'app'
+
+tests\backend\conftest.py:11: ModuleNotFoundError
+
+During handling of the above exception, another exception occurred:
+
+tmp_path = WindowsPath('C:/Users/25193/AppData/Local/Temp/pytest-of-25193/pytest-0/test_upload_chunks_are_idempot0')
+
+    @pytest.fixture
+    def app(tmp_path):
+        try:
+            from app.main import create_app
+        except ImportError:
+>           pytest.fail('Foundation API application has not been implemented')
+E           Failed: Foundation API application has not been implemented
+
+tests\backend\conftest.py:13: Failed
+__ ERROR at setup of test_worker_fails_invalid_media_truthfully_and_persists __
+
+tmp_path = WindowsPath('C:/Users/25193/AppData/Local/Temp/pytest-of-25193/pytest-0/test_worker_fails_invalid_medi0')
+
+    @pytest.fixture
+    def app(tmp_path):
+        try:
+>           from app.main import create_app
+E           ModuleNotFoundError: No module named 'app'
+
+tests\backend\conftest.py:11: ModuleNotFoundError
+
+During handling of the above exception, another exception occurred:
+
+tmp_path = WindowsPath('C:/Users/25193/AppData/Local/Temp/pytest-of-25193/pytest-0/test_worker_fails_invalid_medi0')
+
+    @pytest.fixture
+    def app(tmp_path):
+        try:
+            from app.main import create_app
+        except ImportError:
+>           pytest.fail('Foundation API application has not been implemented')
+E           Failed: Foundation API application has not been implemented
+
+tests\backend\conftest.py:13: Failed
+___ ERROR at setup of test_dashboard_runtime_and_empty_extension_contracts ____
+
+tmp_path = WindowsPath('C:/Users/25193/AppData/Local/Temp/pytest-of-25193/pytest-0/test_dashboard_runtime_and_emp0')
+
+    @pytest.fixture
+    def app(tmp_path):
+        try:
+>           from app.main import create_app
+E           ModuleNotFoundError: No module named 'app'
+
+tests\backend\conftest.py:11: ModuleNotFoundError
+
+During handling of the above exception, another exception occurred:
+
+tmp_path = WindowsPath('C:/Users/25193/AppData/Local/Temp/pytest-of-25193/pytest-0/test_dashboard_runtime_and_emp0')
+
+    @pytest.fixture
+    def app(tmp_path):
+        try:
+            from app.main import create_app
+        except ImportError:
+>           pytest.fail('Foundation API application has not been implemented')
+E           Failed: Foundation API application has not been implemented
+
+tests\backend\conftest.py:13: Failed
+_____ ERROR at setup of test_websocket_requires_session_and_emits_runtime _____
+
+tmp_path = WindowsPath('C:/Users/25193/AppData/Local/Temp/pytest-of-25193/pytest-0/test_websocket_requires_sessio0')
+
+    @pytest.fixture
+    def app(tmp_path):
+        try:
+>           from app.main import create_app
+E           ModuleNotFoundError: No module named 'app'
+
+tests\backend\conftest.py:11: ModuleNotFoundError
+
+During handling of the above exception, another exception occurred:
+
+tmp_path = WindowsPath('C:/Users/25193/AppData/Local/Temp/pytest-of-25193/pytest-0/test_websocket_requires_sessio0')
+
+    @pytest.fixture
+    def app(tmp_path):
+        try:
+            from app.main import create_app
+        except ImportError:
+>           pytest.fail('Foundation API application has not been implemented')
+E           Failed: Foundation API application has not been implemented
+
+tests\backend\conftest.py:13: Failed
+=========================== short test summary info ===========================
+ERROR tests/backend/test_foundation.py::test_business_and_media_require_auth
+ERROR tests/backend/test_foundation.py::test_setup_once_secure_cookie_csrf_and_login
+ERROR tests/backend/test_foundation.py::test_settings_persist_validate_and_reject_lost_update
+ERROR tests/backend/test_foundation.py::test_camera_credentials_redacted_encrypted_and_archive
+ERROR tests/backend/test_foundation.py::test_camera_network_allowlist_and_url_schemes
+ERROR tests/backend/test_foundation.py::test_upload_chunks_are_idempotent_ordered_size_bounded_and_cancelable
+ERROR tests/backend/test_foundation.py::test_worker_fails_invalid_media_truthfully_and_persists
+ERROR tests/backend/test_foundation.py::test_dashboard_runtime_and_empty_extension_contracts
+ERROR tests/backend/test_foundation.py::test_websocket_requires_session_and_emits_runtime
+9 errors in 0.17s

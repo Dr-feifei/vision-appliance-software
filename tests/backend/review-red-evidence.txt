@@ -1,0 +1,97 @@
+FFF                                                                      [100%]
+================================== FAILURES ===================================
+__________ test_archiving_submitted_file_terminalizes_upload_and_job __________
+
+admin = <starlette.testclient.TestClient object at 0x000001FFA3E8F380>
+app = <fastapi.applications.FastAPI object at 0x000001FFA3E8FA10>
+
+    def test_archiving_submitted_file_terminalizes_upload_and_job(admin,app):
+        from app.shared.models import Job
+        upload=admin.post(API+'/uploads',json={'filename':'pending.mp4','size_bytes':3}).json()
+        admin.put(API+'/uploads/'+upload['id']+'/chunks/0',content=b'abc')
+        submitted=admin.post(API+'/uploads/'+upload['id']+'/complete',json={}).json()
+        assert admin.post(API+'/sources/'+submitted['source_id']+'/archive').status_code==204
+>       assert admin.get(API+'/uploads/'+upload['id']).json()['state']=='canceled'
+E       AssertionError: assert 'probing' == 'canceled'
+E
+E         - canceled
+E         + probing
+
+tests\backend\test_security_worker.py:279: AssertionError
+________ test_expired_lease_cannot_be_revived_by_stale_owner_heartbeat ________
+
+admin = <starlette.testclient.TestClient object at 0x000001FFA3F6F4D0>
+app = <fastapi.applications.FastAPI object at 0x000001FFA41EE0D0>
+
+    def test_expired_lease_cannot_be_revived_by_stale_owner_heartbeat(admin,app):
+        from app.shared.models import Job
+        from worker.supervisor import Supervisor
+        source=admin.post(API+'/sources',json={'name':'camera','kind':'camera','address':'rtsp://127.0.0.1:1/live'}).json()
+        job=admin.post(API+'/sources/'+source['id']+'/tests').json()
+        supervisor=Supervisor(app.state.config)
+        assert supervisor.claim()==job['id']
+        with app.state.sessions() as db:
+            db.get(Job,job['id']).lease_until=time.time()-1
+            db.commit()
+        supervisor.heartbeat()
+        with app.state.sessions() as db:
+>           assert supervisor.owned(db,job['id']) is None
+E           AssertionError: assert <app.shared.models.Job object at 0x000001FFA3F9A520> is None
+E            +  where <app.shared.models.Job object at 0x000001FFA3F9A520> = owned(<sqlalchemy.orm.session.Session object at 0x000001FFA42DA0F0>, '8e733598-62ab-479e-b6c8-92fc07fda1aa')
+E            +    where owned = <worker.supervisor.Supervisor object at 0x000001FFA3FAB620>.owned
+
+tests\backend\test_security_worker.py:296: AssertionError
+__ test_corrupted_camera_ciphertext_fails_actionably_without_crashing_worker __
+
+admin = <starlette.testclient.TestClient object at 0x000001FFA4024CD0>
+app = <fastapi.applications.FastAPI object at 0x000001FFA4024050>
+
+    def test_corrupted_camera_ciphertext_fails_actionably_without_crashing_worker(admin,app):
+        from app.shared.models import Source
+        from worker.supervisor import Supervisor
+        source=admin.post(API+'/sources',json={'name':'camera','kind':'camera','address':'rtsp://127.0.0.1:1/live'}).json()
+        with app.state.sessions() as db:
+            db.get(Source,source['id']).credentials='corrupted-ciphertext'
+            db.commit()
+        job=admin.post(API+'/sources/'+source['id']+'/tests').json()
+        supervisor=Supervisor(app.state.config)
+>       assert supervisor.run_once()
+               ^^^^^^^^^^^^^^^^^^^^^
+
+tests\backend\test_security_worker.py:310:
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+worker\supervisor.py:226: in run_once
+    self.process_camera(job_id)
+worker\supervisor.py:169: in process_camera
+    address,credentials = source.address,self.vault.decrypt(source.credentials)
+                                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+backend\app\shared\security.py:32: in decrypt
+    return json.loads(self.fernet.decrypt(value.encode())) if value else {'username':'','password':''}
+                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv\Lib\site-packages\cryptography\fernet.py:87: in decrypt
+    timestamp, data = Fernet._get_unverified_token_data(token)
+                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+token = b'corrupted-ciphertext'
+
+    @staticmethod
+    def _get_unverified_token_data(token: bytes | str) -> tuple[int, bytes]:
+        if not isinstance(token, (str, bytes)):
+            raise TypeError("token must be bytes or str")
+
+        try:
+            data = base64.urlsafe_b64decode(token)
+        except (TypeError, binascii.Error):
+            raise InvalidToken
+
+        if not data or data[0] != 0x80:
+>           raise InvalidToken
+E           cryptography.fernet.InvalidToken
+
+.venv\Lib\site-packages\cryptography\fernet.py:121: InvalidToken
+=========================== short test summary info ===========================
+FAILED tests/backend/test_security_worker.py::test_archiving_submitted_file_terminalizes_upload_and_job
+FAILED tests/backend/test_security_worker.py::test_expired_lease_cannot_be_revived_by_stale_owner_heartbeat
+FAILED tests/backend/test_security_worker.py::test_corrupted_camera_ciphertext_fails_actionably_without_crashing_worker
+3 failed, 15 deselected in 1.89s

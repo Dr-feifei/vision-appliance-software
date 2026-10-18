@@ -1,0 +1,21 @@
+F                                                                        [100%]
+================================== FAILURES ===================================
+__________ test_source_query_matches_name_or_redacted_camera_address __________
+
+admin = <starlette.testclient.TestClient object at 0x0000023D48D67380>
+
+    def test_source_query_matches_name_or_redacted_camera_address(admin):
+        first=admin.post(API+'/sources',json={'name':'north entrance','kind':'camera','address':'rtsp://secret-user:secret-password@127.0.0.1:8554/loading-bay'}).json()
+        second=admin.post(API+'/sources',json={'name':'loading-bay recorder','kind':'camera','address':'rtsp://127.0.0.1:8554/other'}).json()
+        result=admin.get(API+'/sources',params={'q':'loading-bay'}).json()
+>       assert {source['id'] for source in result['items']}=={first['id'],second['id']}
+E       AssertionError: assert {'1ffb633b-36...80c2bcb6fe72'} == {'1ffb633b-36...eb50eee4be2c'}
+E
+E         Extra items in the right set:
+E         '3e639dc1-0c8f-4c59-abfb-eb50eee4be2c'
+E         Use -v to get more diff
+
+tests\backend\test_security_worker.py:331: AssertionError
+=========================== short test summary info ===========================
+FAILED tests/backend/test_security_worker.py::test_source_query_matches_name_or_redacted_camera_address
+1 failed, 19 deselected in 1.56s

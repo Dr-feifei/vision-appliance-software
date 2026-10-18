@@ -1,0 +1,32 @@
+.F.                                                                      [100%]
+================================== FAILURES ===================================
+________ test_rtsp_timeout_is_a_total_deadline_not_reset_by_each_byte _________
+
+    def test_rtsp_timeout_is_a_total_deadline_not_reset_by_each_byte():
+        from worker.camera import describe
+        from worker.media import MediaFailure
+        class SlowHandler(socketserver.BaseRequestHandler):
+            def handle(self):
+                self.request.recv(65536)
+                response=b'RTSP/1.0 200 OK\r\nContent-Length: 29\r\n\r\nv=0\r\nm=video 0 RTP/AVP 96\r\n'
+                try:
+                    for position in range(0,len(response),4):
+                        self.request.sendall(response[position:position+4])
+                        time.sleep(0.04)
+                except OSError:
+                    pass
+        with RTSPServer(('127.0.0.1',0),SlowHandler) as server:
+            threading.Thread(target=server.serve_forever,daemon=True).start()
+            started=time.monotonic()
+            with pytest.raises(MediaFailure) as caught:
+                describe(f'rtsp://127.0.0.1:{server.server_address[1]}/live',{},['127.0.0.0/8'],0.1)
+            assert caught.value.code=='camera_connection_failed'
+>           assert time.monotonic()-started<0.4
+E           assert (67513.915732 - 67513.2261378) < 0.4
+E            +  where 67513.915732 = <built-in function monotonic>()
+E            +    where <built-in function monotonic> = time.monotonic
+
+tests\backend\test_security_worker.py:257: AssertionError
+=========================== short test summary info ===========================
+FAILED tests/backend/test_security_worker.py::test_rtsp_timeout_is_a_total_deadline_not_reset_by_each_byte
+1 failed, 2 passed, 12 deselected in 3.29s

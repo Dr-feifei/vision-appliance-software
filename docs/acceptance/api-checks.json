@@ -1,0 +1,86 @@
+[
+  {
+    "check": "live",
+    "passed": true
+  },
+  {
+    "check": "unauthenticated sources blocked",
+    "passed": true
+  },
+  {
+    "check": "first administrator setup",
+    "passed": true
+  },
+  {
+    "check": "second administrator setup blocked",
+    "passed": true
+  },
+  {
+    "check": "CSRF write rejected",
+    "passed": true
+  },
+  {
+    "check": "settings persisted",
+    "passed": true
+  },
+  {
+    "check": "stale settings version conflicts",
+    "passed": true
+  },
+  {
+    "check": "upload session accepted",
+    "passed": true
+  },
+  {
+    "check": "chunk upload",
+    "passed": true
+  },
+  {
+    "check": "probe job accepted",
+    "passed": true
+  },
+  {
+    "check": "independent worker completed real probe/transcode",
+    "passed": true
+  },
+  {
+    "check": "real media metadata",
+    "passed": true
+  },
+  {
+    "check": "file preview session",
+    "passed": true
+  },
+  {
+    "check": "protected browser media byte range",
+    "passed": true
+  },
+  {
+    "check": "media unauthenticated denied",
+    "passed": true
+  },
+  {
+    "check": "camera persisted",
+    "passed": true
+  },
+  {
+    "check": "camera credentials redacted",
+    "passed": true
+  },
+  {
+    "check": "camera test queued",
+    "passed": true
+  },
+  {
+    "check": "camera unreachable diagnostic",
+    "passed": true
+  },
+  {
+    "check": "no fabricated events",
+    "passed": true
+  },
+  {
+    "check": "worker heartbeat measured",
+    "passed": true
+  }
+]

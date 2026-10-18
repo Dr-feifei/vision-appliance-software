@@ -46,4 +46,4 @@ git pull --ff-only origin main
 
 涉及逻辑变更时说明测试结果；涉及界面时附必要截图。依赖和启动方式改变时，同步更新 README。API Key 使用环境变量或系统凭据管理器，不提交真实密钥、客户视频和本机运行记录。
 
-尚未确定技术栈，因此当前没有固定的自动化测试命令；引入技术栈时一起建立测试及 CI。
+技术栈为 Vue 3 / TypeScript 与 FastAPI / SQLite，安装、启动及固定测试命令见 README。模块边界与另外两位成员的接入约定见 `docs/DEVELOPMENT.md`，修改公共接口时同步更新 `contracts/` 和前端生成类型。当前尚未配置远程 CI，提交前需执行本地验证并在 PR 中记录结果。

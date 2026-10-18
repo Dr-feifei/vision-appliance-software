@@ -1,0 +1,40 @@
+# 前端工作空间
+
+浅色中文本地管理界面，按 `docs/reference/` 和 `docs/FOUNDATION_API.md` 实现。桌面侧栏 220px、顶部栏 64px，移动端折叠导航；字体使用本机系统字体，图标和所有运行资源在本地打包。
+
+## 运行和验证
+
+在本目录执行：
+
+```powershell
+npm.cmd ci
+npm.cmd run dev
+npm.cmd run generate:api
+npm.cmd test
+npm.cmd run typecheck
+npm.cmd run build
+```
+
+开发服务器将 `/api/v1`（含 WebSocket）代理到 `127.0.0.1:8000`。生产输出为 `dist/`，由同源后端提供；刷新和详情深链接需返回前端入口。`generate:api` 从 `../contracts/openapi.json` 生成 `src/shared/api/generated.ts`。
+
+## 页面与边界
+
+- `/login`：首次管理员初始化或登录；初始化密码不少于 12 字符。
+- `/dashboard`、`/dashboard/events`：真实视频源、事件与任务摘要。
+- `/runtime`：本机资源采样曲线、组件状态与日志。
+- `/sources`、`/sources/:id`：列表筛选、4 MiB 顺序分块上传、后台处理轮询、受保护预览、摄像头创建/编辑/测试/归档。
+- `/settings/general`、`storage`、`resources`、`security`、`diagnostics`：分区设置、版本号冲突保护与未保存提示。
+
+固定七个导航项，任务创建、智能体管理和模型管理为禁用入口，无对应页面和路由。模型、GPU、媒体网关和推理能力依据后端实际状态说明，不提供演示运行数据。时区与自动重连等尚未接入的执行策略明确标为仅保存。
+
+共享设施位于 `src/shared/`：类型化 Axios API、Cookie 会话和 CSRF、媒体地址校验与播放适配、WebSocket 快照重同步、公共状态与错误组件。页面模块仅使用公共接口，不导入其他页面的私有状态。读取的设置可包含部署只读字段，写入时按分类白名单筛选。
+
+上传只有后台返回 `ready` 且有来源 ID 才视为完成。失败保留接口返回的脱敏诊断，并为视频无效、处理超时、存储故障和组件缺失提供对应提示。摄像头空凭据默认不提交，明确勾选清除后才发送空字符串；连接测试结果不推导为在线或可播放。
+
+## 锁定依赖
+
+Vue 3.5.44、TypeScript 5.9.3、Vite 7.3.7、Naive UI 2.45.3、Pinia 4.1.0、Vue Router 4.6.4、Axios 1.20.0。Vitest 4.1.12、vue-tsc 3.1.1、Vue Test Utils 2.4.6、jsdom 26.1.0；完整版本和传递依赖见 `package-lock.json`。已在 Node 24.10.0 / npm 11.6.1 上验证。
+
+`vue-tsc` 固定 3.1.1：验证时 3.3.13 对嵌套模板作用域产生错误诊断，3.1.1 的严格检查通过。生产依赖及开发依赖审计均为零已知漏洞。
+
+自动化测试覆盖认证表单、CSRF Cookie、错误脱敏、允许路由、媒体边界、设置校验及字段白名单、摄像头凭据保持、上传顺序与就绪条件、异步失败诊断、请求竞态。最新验证日志保存在本机 `frontend/.artifacts/`（不入库）；浏览器截图和集成验收由仓库集成任务维护。
