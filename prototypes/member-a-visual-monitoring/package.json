@@ -1,0 +1,9 @@
+{
+  "name": "member-a-visual-monitoring",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "check": "node --check dist/app.js && node --check dist/mock-api.js && node scripts/validate-static.mjs"
+  }
+}

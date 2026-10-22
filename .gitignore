@@ -16,6 +16,8 @@ node_modules/
 # Build and runtime outputs
 build/
 dist/
+!prototypes/member-a-visual-monitoring/dist/
+!prototypes/member-a-visual-monitoring/dist/**
 runs/
 logs/
 *.log
