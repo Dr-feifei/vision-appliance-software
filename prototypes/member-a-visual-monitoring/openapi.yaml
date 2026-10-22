@@ -1,0 +1,136 @@
+openapi: 3.0.3
+info:
+  title: 任务创建与模型管理 API
+  version: 1.0.0
+servers:
+  - url: /api/v1
+paths:
+  /recordings:
+    post:
+      summary: 导入本地录像并读取基础信息
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              required: [file]
+              properties:
+                file:
+                  type: string
+                  format: binary
+      responses:
+        "201": { description: 返回 sourceId、分辨率、时长、帧率及文件校验状态 }
+        "415": { description: 文件格式或编码不支持 }
+        "507": { description: 本地存储空间不足 }
+  /capabilities/models:
+    get:
+      summary: 查询通过校验且可用的模型与绑定模板
+      responses:
+        "200":
+          description: 模型列表
+    post:
+      summary: 新增模型与一一绑定的模板
+      responses:
+        "201":
+          description: 已创建，进入或完成兼容性校验
+  /capabilities/models/{modelId}:
+    get:
+      summary: 查询模型当前版本、能力和限制
+      parameters:
+        - in: path
+          name: modelId
+          required: true
+          schema: { type: string }
+      responses:
+        "200": { description: 模型详情 }
+    patch:
+      summary: 创建模型或模板的新版本
+      parameters:
+        - in: path
+          name: modelId
+          required: true
+          schema: { type: string }
+      responses:
+        "200": { description: 新版本 }
+    delete:
+      summary: 删除未被运行任务引用的模型与模板
+      parameters:
+        - in: path
+          name: modelId
+          required: true
+          schema: { type: string }
+      responses:
+        "204": { description: 已删除 }
+        "409": { description: 仍被运行任务引用 }
+  /capabilities/validate:
+    post:
+      summary: 校验任务对模型、模板、规则和目标的引用
+      responses:
+        "200": { description: 校验结果 }
+  /llm/deployments:
+    get:
+      summary: 查询预先部署的本地大模型与健康状态
+      responses:
+        "200": { description: 大模型列表 }
+  /llm/selections/{usage}:
+    put:
+      summary: 切换后续请求使用的本地大模型
+      parameters:
+        - in: path
+          name: usage
+          required: true
+          schema:
+            type: string
+            enum: [requirement_parse, multimodal_analysis]
+      responses:
+        "200": { description: 切换结果 }
+  /requirements/parse:
+    post:
+      summary: 将自然语言解析为对象、行为、区域和时间条件
+      responses:
+        "200": { description: 结构化需求 }
+  /requirements/evaluate:
+    post:
+      summary: 评估需求完整性、模板匹配和多模态可执行性
+      responses:
+        "200": { description: 可执行性结果 }
+  /agents:
+    post:
+      summary: 调用智能体服务创建 Agent 和首个 Revision
+      responses:
+        "201": { description: Agent 与 Revision 标识 }
+  /agents/{agentId}/runs:
+    post:
+      summary: 使用幂等键启动指定 Revision
+      parameters:
+        - in: header
+          name: Idempotency-Key
+          required: true
+          schema: { type: string }
+        - in: path
+          name: agentId
+          required: true
+          schema: { type: string }
+      responses:
+        "202": { description: Run 已接受 }
+  /runs/{runId}:
+    get:
+      summary: 查询录像分析进度与最终状态
+      parameters:
+        - in: path
+          name: runId
+          required: true
+          schema: { type: string }
+      responses:
+        "200": { description: 排队、分析进度、成功或失败状态 }
+  /agents/{agentId}/events:
+    get:
+      summary: 查询录像分析产生的报警事件与证据
+      parameters:
+        - in: path
+          name: agentId
+          required: true
+          schema: { type: string }
+      responses:
+        "200": { description: 事件时间、类型、级别、截图和片段引用 }

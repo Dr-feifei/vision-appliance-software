@@ -1,0 +1,76 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="开放场景视觉监测工作台：任务创建与模型管理" />
+    <title>视觉监测工作台</title>
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <div class="app-shell" id="app-shell">
+      <aside class="sidebar" aria-label="主导航">
+        <div class="brand">
+          <div class="brand-mark" aria-hidden="true"><span></span><span></span><span></span></div>
+          <div><strong>VisionOps</strong><small>现场验证工作台</small></div>
+        </div>
+
+        <nav class="nav-list">
+          <button class="nav-item" data-route="overview"><span class="nav-icon">⌁</span><span>工作概览</span></button>
+          <button class="nav-item active" data-route="task"><span class="nav-icon">＋</span><span>任务创建</span></button>
+          <button class="nav-item" data-route="models"><span class="nav-icon">◇</span><span>模型管理</span></button>
+        </nav>
+
+        <div class="sidebar-note">
+          <span class="status-dot online"></span>
+          <div><strong>离线服务正常</strong><small>所有能力均在本机运行</small></div>
+        </div>
+        <div class="profile"><div class="avatar">A</div><div><strong>成员 A</strong><small>任务与模型管理员</small></div></div>
+      </aside>
+
+      <section class="workspace">
+        <header class="topbar">
+          <button class="mobile-menu" id="mobile-menu" aria-label="展开导航">☰</button>
+          <div class="breadcrumb"><span>开放场景视觉监测</span><b>/</b><strong id="page-title">任务创建</strong></div>
+          <div class="topbar-actions">
+            <div class="health-pill"><span class="status-dot online"></span>4 项服务正常</div>
+            <button class="icon-button" aria-label="通知">●</button>
+          </div>
+        </header>
+        <main id="main-content" tabindex="-1"></main>
+      </section>
+    </div>
+
+    <dialog id="model-dialog" class="dialog">
+      <form method="dialog" id="model-form">
+        <div class="dialog-head"><div><p class="eyebrow">MODEL & TEMPLATE</p><h2 id="dialog-title">新增模型与模板</h2></div><button class="close-button" value="cancel" aria-label="关闭">×</button></div>
+        <input type="hidden" name="id" />
+        <div class="form-grid">
+          <label class="field"><span>模型名称</span><input name="name" required placeholder="例如：人员检测模型" /></label>
+          <label class="field"><span>模型版本</span><input name="version" required placeholder="例如：1.0.0" /></label>
+          <label class="field"><span>运行接口</span><select name="runtimeType"><option>ONNX Runtime</option><option>TensorRT</option><option>PyTorch</option></select></label>
+          <label class="field"><span>模型文件</span><input name="fileName" required placeholder="model.onnx" /></label>
+          <label class="field"><span>模板名称</span><input name="templateName" required placeholder="例如：区域入侵模板" /></label>
+          <label class="field"><span>场景类型</span><select name="scene"><option value="intrusion">区域入侵</option><option value="dwell">区域滞留</option><option value="fire">火焰检测</option><option value="absence">岗位缺员</option><option value="closed_eyes">持续闭眼</option></select></label>
+          <label class="field full"><span>支持目标（逗号分隔）</span><input name="targets" required placeholder="person, vehicle" /></label>
+          <label class="field full"><span>能力限制</span><textarea name="limitations" rows="3" placeholder="例如：逆光或严重遮挡时准确率下降"></textarea></label>
+        </div>
+        <div class="validation-box"><span>✓</span><div><strong>保存后执行兼容性校验</strong><p>模型文件、运行接口、目标类别和模板规则将作为一个版本快照。</p></div></div>
+        <div class="dialog-actions"><button class="button ghost" value="cancel">取消</button><button class="button primary" id="save-model" value="default">保存并校验</button></div>
+      </form>
+    </dialog>
+
+    <dialog id="evidence-dialog" class="dialog evidence-dialog" aria-labelledby="evidence-title">
+      <div class="evidence-dialog-shell">
+        <div class="dialog-head">
+          <div><p class="eyebrow">EVENT EVIDENCE</p><h2 id="evidence-title">报警事件证据</h2></div>
+          <button class="close-button" id="close-evidence" type="button" aria-label="关闭证据窗口">×</button>
+        </div>
+        <div id="evidence-content"></div>
+      </div>
+    </dialog>
+
+    <div class="toast-region" id="toast-region" aria-live="polite" aria-atomic="true"></div>
+    <script type="module" src="./app.js"></script>
+  </body>
+</html>

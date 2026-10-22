@@ -4,6 +4,8 @@
 
 任务创建、智能体管理、模型管理由后续成员接入，本轮侧栏保留禁用入口，没有生成这三个页面。模型推理、MediaMTX 摄像头播放、智能体版本、复测和报告导出不属于本轮已完成能力；完整需求保存在 [主规格](docs/MASTER_SPEC.md)。
 
+成员 A 已提交任务创建、模型管理及录像报警交互原型，位于 `prototypes/member-a-visual-monitoring/`。该目录可独立运行，用于界面和流程评审；当前使用浏览器本地数据及 Mock 分析结果，尚未接入 Vue 主前端或真实模型推理服务。
+
 ## 安装与启动（Windows x64）
 
 1. 安装 Python **3.13 64 位**和 Node.js **22.12+ 或 24 LTS**。
@@ -81,6 +83,7 @@ backend/        # FastAPI 模块、数据模型、认证、持久层和 Alembic 
 worker/         # 独立媒体作业处理器和心跳
 contracts/      # OpenAPI、生成器和契约示例
 deploy/         # 本地组件清单、安装和启动管理脚本
+prototypes/     # 尚未并入主应用的独立功能原型
 tests/          # 后端与部署测试；前端测试位于 frontend/tests
 docs/           # 主规格、原型、设计、计划、API、开发和验收说明
 var/            # 数据库、媒体、机密、日志及工具，仅运行时生成
